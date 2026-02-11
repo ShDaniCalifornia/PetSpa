@@ -1,0 +1,84 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- БАЗОВЫЙ стиль для всех TextBox -->
+    <Style x:Key="BaseTextBoxStyle" TargetType="TextBox">
+        <Setter Property="FontFamily" Value="Montserrat"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="40 0 0 0"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="CaretBrush" Value="White"/>
+        <Setter Property="SelectionBrush" Value="#DF6C2D"/>
+        <Setter Property="SelectionOpacity" Value="0.3"/>
+    </Style>
+
+    <!-- Стиль для полупрозрачного текста внутри -->
+    <Style x:Key="SemiTransparentTextBoxStyle" 
+           TargetType="TextBox"
+           BasedOn="{StaticResource BaseTextBoxStyle}">
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+    </Style>
+
+    <!-- Стиль для поиска -->
+    <Style x:Key="SearchTextBoxStyle" 
+           TargetType="TextBox"
+           BasedOn="{StaticResource BaseTextBoxStyle}">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Padding" Value="10,8,10,8"/>
+        <Setter Property="Margin" Value="0,0,10,0"/>
+    </Style>
+
+    <!-- Основной стиль с белым фоном и тенью -->
+    <Style x:Key="BorderedTextBoxStyle" 
+           TargetType="TextBox"
+           BasedOn="{StaticResource BaseTextBoxStyle}">
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Grid>
+                        <Border x:Name="border"
+                                Width="{TemplateBinding Width}"
+                                Height="{TemplateBinding Height}"
+                                CornerRadius="10"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="#66FFFFFF"
+                                BorderThickness="2">
+                            <Border.Effect>
+                                <DropShadowEffect ShadowDepth="0" 
+                                                  BlurRadius="10" 
+                                                  Color="#888888"
+                                                  Opacity="0.5"/>
+                            </Border.Effect>
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="#DF6C2D"/>
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="#DF6C2D"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Стиль для отключенных полей -->
+    <Style x:Key="DisabledTextBoxStyle" 
+           TargetType="TextBox"
+           BasedOn="{StaticResource BaseTextBoxStyle}">
+        <Setter Property="Foreground" Value="#888888"/>
+        <Setter Property="Background" Value="#2D2D44"/>
+        <Setter Property="IsEnabled" Value="False"/>
+        <Setter Property="Opacity" Value="0.7"/>
+    </Style>
+</ResourceDictionary>

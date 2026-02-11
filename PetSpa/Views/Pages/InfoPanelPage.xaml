@@ -1,0 +1,41 @@
+﻿<Page x:Class="PetSpa.Views.Pages.InfoPanelPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:PetSpa.Views.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="120" d:DesignWidth="1080"
+      Title="InfoPanelPage">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="520"/>
+            <ColumnDefinition Width="440"/>
+        </Grid.ColumnDefinitions>
+
+        <Image Source="/Resources/Icons/LogoIcon.png" Margin="10 25 0 25" Stretch="Fill"/>
+
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="250"/>
+            </Grid.ColumnDefinitions>
+
+            <Image Source="/Resources/Icons/PhoneIcon.png" Margin="50 40 0 0" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+
+            <TextBlock Text="+7 (915) 999 75 76" Grid.Column="1" FontSize="20" Margin="5 40 0 0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+            <TextBlock Text="  Тех. поддержка" Grid.Column="1" Grid.Row="1" FontSize="20" Foreground="#DF6C2D"/>
+            
+        </Grid>
+        
+        
+    </Grid>
+</Page>

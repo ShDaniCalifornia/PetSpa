@@ -1,0 +1,712 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Хранилище PetSpaModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Appointments">
+          <Key>
+            <PropertyRef Name="id_appointments" />
+          </Key>
+          <Property Name="id_appointments" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="price" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="data_appointment" Type="date" Nullable="false" />
+          <Property Name="time_appointment" Type="time" Precision="7" Nullable="false" />
+          <Property Name="id_client" Type="int" Nullable="false" />
+          <Property Name="id_service" Type="int" Nullable="false" />
+          <Property Name="id_master" Type="int" Nullable="false" />
+          <Property Name="id_pet" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Clients">
+          <Key>
+            <PropertyRef Name="id_client" />
+          </Key>
+          <Property Name="id_client" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="full_name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="date_of_birth" Type="date" Nullable="false" />
+          <Property Name="phone" Type="nvarchar" MaxLength="11" Nullable="false" />
+          <Property Name="id_user" Type="int" />
+        </EntityType>
+        <EntityType Name="Masters">
+          <Key>
+            <PropertyRef Name="id_master" />
+          </Key>
+          <Property Name="id_master" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="full_name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="experience" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="photo" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="id_specialization" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Pets">
+          <Key>
+            <PropertyRef Name="id_pet" />
+          </Key>
+          <Property Name="id_pet" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name_pet" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="weight" Type="int" Nullable="false" />
+          <Property Name="birthday" Type="date" Nullable="false" />
+          <Property Name="photo" Type="nvarchar(max)" />
+          <Property Name="id_client" Type="int" Nullable="false" />
+          <Property Name="Breed" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="id_role" />
+          </Key>
+          <Property Name="id_role" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="role" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ServicePrices">
+          <Key>
+            <PropertyRef Name="id_service_price" />
+          </Key>
+          <Property Name="id_service_price" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_service" Type="int" />
+          <Property Name="id_weight_category" Type="int" />
+          <Property Name="price" Type="decimal" Precision="10" Scale="2" />
+        </EntityType>
+        <EntityType Name="Services">
+          <Key>
+            <PropertyRef Name="id_service" />
+          </Key>
+          <Property Name="id_service" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name_service" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="price" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="photo" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="description" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Specialization">
+          <Key>
+            <PropertyRef Name="id_specialization" />
+          </Key>
+          <Property Name="id_specialization" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name_specialization" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="id_user" />
+          </Key>
+          <Property Name="id_user" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="full_name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="id_role" Type="int" Nullable="false" />
+          <Property Name="login" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="password" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="phone" Type="nvarchar" MaxLength="11" />
+          <Property Name="email" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="WeightCategories">
+          <Key>
+            <PropertyRef Name="id_weight_category" />
+          </Key>
+          <Property Name="id_weight_category" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="min_weight" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="max_weight" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="description" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <Association Name="FK__ServicePr__id_se__17036CC0">
+          <End Role="Services" Type="Self.Services" Multiplicity="0..1" />
+          <End Role="ServicePrices" Type="Self.ServicePrices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Services">
+              <PropertyRef Name="id_service" />
+            </Principal>
+            <Dependent Role="ServicePrices">
+              <PropertyRef Name="id_service" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ServicePr__id_we__17F790F9">
+          <End Role="WeightCategories" Type="Self.WeightCategories" Multiplicity="0..1" />
+          <End Role="ServicePrices" Type="Self.ServicePrices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WeightCategories">
+              <PropertyRef Name="id_weight_category" />
+            </Principal>
+            <Dependent Role="ServicePrices">
+              <PropertyRef Name="id_weight_category" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Appointments_Clients">
+          <End Role="Clients" Type="Self.Clients" Multiplicity="1" />
+          <End Role="Appointments" Type="Self.Appointments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clients">
+              <PropertyRef Name="id_client" />
+            </Principal>
+            <Dependent Role="Appointments">
+              <PropertyRef Name="id_client" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Appointments_Masters">
+          <End Role="Masters" Type="Self.Masters" Multiplicity="1" />
+          <End Role="Appointments" Type="Self.Appointments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Masters">
+              <PropertyRef Name="id_master" />
+            </Principal>
+            <Dependent Role="Appointments">
+              <PropertyRef Name="id_master" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Appointments_Pets">
+          <End Role="Pets" Type="Self.Pets" Multiplicity="1" />
+          <End Role="Appointments" Type="Self.Appointments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Pets">
+              <PropertyRef Name="id_pet" />
+            </Principal>
+            <Dependent Role="Appointments">
+              <PropertyRef Name="id_pet" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Appointments_Services">
+          <End Role="Services" Type="Self.Services" Multiplicity="1" />
+          <End Role="Appointments" Type="Self.Appointments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Services">
+              <PropertyRef Name="id_service" />
+            </Principal>
+            <Dependent Role="Appointments">
+              <PropertyRef Name="id_service" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Clients_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="Clients" Type="Self.Clients" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="id_user" />
+            </Principal>
+            <Dependent Role="Clients">
+              <PropertyRef Name="id_user" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Masters_Specialization">
+          <End Role="Specialization" Type="Self.Specialization" Multiplicity="1" />
+          <End Role="Masters" Type="Self.Masters" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Specialization">
+              <PropertyRef Name="id_specialization" />
+            </Principal>
+            <Dependent Role="Masters">
+              <PropertyRef Name="id_specialization" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Pets_Clients">
+          <End Role="Clients" Type="Self.Clients" Multiplicity="1" />
+          <End Role="Pets" Type="Self.Pets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clients">
+              <PropertyRef Name="id_client" />
+            </Principal>
+            <Dependent Role="Pets">
+              <PropertyRef Name="id_client" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_Role">
+          <End Role="Role" Type="Self.Role" Multiplicity="1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="id_role" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="id_role" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Хранилище PetSpaModelContainer">
+          <EntitySet Name="Appointments" EntityType="Self.Appointments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Clients" EntityType="Self.Clients" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Masters" EntityType="Self.Masters" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Pets" EntityType="Self.Pets" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ServicePrices" EntityType="Self.ServicePrices" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Services" EntityType="Self.Services" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Specialization" EntityType="Self.Specialization" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WeightCategories" EntityType="Self.WeightCategories" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__ServicePr__id_se__17036CC0" Association="Self.FK__ServicePr__id_se__17036CC0">
+            <End Role="Services" EntitySet="Services" />
+            <End Role="ServicePrices" EntitySet="ServicePrices" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ServicePr__id_we__17F790F9" Association="Self.FK__ServicePr__id_we__17F790F9">
+            <End Role="WeightCategories" EntitySet="WeightCategories" />
+            <End Role="ServicePrices" EntitySet="ServicePrices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Appointments_Clients" Association="Self.FK_Appointments_Clients">
+            <End Role="Clients" EntitySet="Clients" />
+            <End Role="Appointments" EntitySet="Appointments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Appointments_Masters" Association="Self.FK_Appointments_Masters">
+            <End Role="Masters" EntitySet="Masters" />
+            <End Role="Appointments" EntitySet="Appointments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Appointments_Pets" Association="Self.FK_Appointments_Pets">
+            <End Role="Pets" EntitySet="Pets" />
+            <End Role="Appointments" EntitySet="Appointments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Appointments_Services" Association="Self.FK_Appointments_Services">
+            <End Role="Services" EntitySet="Services" />
+            <End Role="Appointments" EntitySet="Appointments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Clients_Users" Association="Self.FK_Clients_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Clients" EntitySet="Clients" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Masters_Specialization" Association="Self.FK_Masters_Specialization">
+            <End Role="Specialization" EntitySet="Specialization" />
+            <End Role="Masters" EntitySet="Masters" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Pets_Clients" Association="Self.FK_Pets_Clients">
+            <End Role="Clients" EntitySet="Clients" />
+            <End Role="Pets" EntitySet="Pets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_Role" Association="Self.FK_Users_Role">
+            <End Role="Role" EntitySet="Role" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="PetSpaModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Appointments">
+          <Key>
+            <PropertyRef Name="id_appointments" />
+          </Key>
+          <Property Name="id_appointments" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="price" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="data_appointment" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="time_appointment" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="id_client" Type="Int32" Nullable="false" />
+          <Property Name="id_service" Type="Int32" Nullable="false" />
+          <Property Name="id_master" Type="Int32" Nullable="false" />
+          <Property Name="id_pet" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Clients" Relationship="Self.FK_Appointments_Clients" FromRole="Appointments" ToRole="Clients" />
+          <NavigationProperty Name="Masters" Relationship="Self.FK_Appointments_Masters" FromRole="Appointments" ToRole="Masters" />
+          <NavigationProperty Name="Pets" Relationship="Self.FK_Appointments_Pets" FromRole="Appointments" ToRole="Pets" />
+          <NavigationProperty Name="Services" Relationship="Self.FK_Appointments_Services" FromRole="Appointments" ToRole="Services" />
+        </EntityType>
+        <EntityType Name="Clients">
+          <Key>
+            <PropertyRef Name="id_client" />
+          </Key>
+          <Property Name="id_client" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="full_name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="date_of_birth" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="phone" Type="String" MaxLength="11" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="id_user" Type="Int32" />
+          <NavigationProperty Name="Appointments" Relationship="Self.FK_Appointments_Clients" FromRole="Clients" ToRole="Appointments" />
+          <NavigationProperty Name="Users" Relationship="Self.FK_Clients_Users" FromRole="Clients" ToRole="Users" />
+          <NavigationProperty Name="Pets" Relationship="Self.FK_Pets_Clients" FromRole="Clients" ToRole="Pets" />
+        </EntityType>
+        <EntityType Name="Masters">
+          <Key>
+            <PropertyRef Name="id_master" />
+          </Key>
+          <Property Name="id_master" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="full_name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="experience" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="photo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="id_specialization" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Appointments" Relationship="Self.FK_Appointments_Masters" FromRole="Masters" ToRole="Appointments" />
+          <NavigationProperty Name="Specialization" Relationship="Self.FK_Masters_Specialization" FromRole="Masters" ToRole="Specialization" />
+        </EntityType>
+        <EntityType Name="Pets">
+          <Key>
+            <PropertyRef Name="id_pet" />
+          </Key>
+          <Property Name="id_pet" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name_pet" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="weight" Type="Int32" Nullable="false" />
+          <Property Name="birthday" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="photo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="id_client" Type="Int32" Nullable="false" />
+          <Property Name="Breed" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Appointments" Relationship="Self.FK_Appointments_Pets" FromRole="Pets" ToRole="Appointments" />
+          <NavigationProperty Name="Clients" Relationship="Self.FK_Pets_Clients" FromRole="Pets" ToRole="Clients" />
+        </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="id_role" />
+          </Key>
+          <Property Name="id_role" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="role1" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Users" Relationship="Self.FK_Users_Role" FromRole="Role" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="ServicePrices">
+          <Key>
+            <PropertyRef Name="id_service_price" />
+          </Key>
+          <Property Name="id_service_price" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_service" Type="Int32" />
+          <Property Name="id_weight_category" Type="Int32" />
+          <Property Name="price" Type="Decimal" Precision="10" Scale="2" />
+          <NavigationProperty Name="Services" Relationship="Self.FK__ServicePr__id_se__17036CC0" FromRole="ServicePrices" ToRole="Services" />
+          <NavigationProperty Name="WeightCategories" Relationship="Self.FK__ServicePr__id_we__17F790F9" FromRole="ServicePrices" ToRole="WeightCategories" />
+        </EntityType>
+        <EntityType Name="Services">
+          <Key>
+            <PropertyRef Name="id_service" />
+          </Key>
+          <Property Name="id_service" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name_service" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="price" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="photo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Appointments" Relationship="Self.FK_Appointments_Services" FromRole="Services" ToRole="Appointments" />
+          <NavigationProperty Name="ServicePrices" Relationship="Self.FK__ServicePr__id_se__17036CC0" FromRole="Services" ToRole="ServicePrices" />
+          <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Specialization">
+          <Key>
+            <PropertyRef Name="id_specialization" />
+          </Key>
+          <Property Name="id_specialization" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name_specialization" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Masters" Relationship="Self.FK_Masters_Specialization" FromRole="Specialization" ToRole="Masters" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="id_user" />
+          </Key>
+          <Property Name="id_user" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="full_name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="id_role" Type="Int32" Nullable="false" />
+          <Property Name="login" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="password" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="phone" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
+          <Property Name="email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Clients" Relationship="Self.FK_Clients_Users" FromRole="Users" ToRole="Clients" />
+          <NavigationProperty Name="Role" Relationship="Self.FK_Users_Role" FromRole="Users" ToRole="Role" />
+        </EntityType>
+        <EntityType Name="WeightCategories">
+          <Key>
+            <PropertyRef Name="id_weight_category" />
+          </Key>
+          <Property Name="id_weight_category" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="min_weight" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="max_weight" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="description" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ServicePrices" Relationship="Self.FK__ServicePr__id_we__17F790F9" FromRole="WeightCategories" ToRole="ServicePrices" />
+        </EntityType>
+        <Association Name="FK_Appointments_Clients">
+          <End Role="Clients" Type="Self.Clients" Multiplicity="1" />
+          <End Role="Appointments" Type="Self.Appointments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clients">
+              <PropertyRef Name="id_client" />
+            </Principal>
+            <Dependent Role="Appointments">
+              <PropertyRef Name="id_client" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Appointments_Masters">
+          <End Role="Masters" Type="Self.Masters" Multiplicity="1" />
+          <End Role="Appointments" Type="Self.Appointments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Masters">
+              <PropertyRef Name="id_master" />
+            </Principal>
+            <Dependent Role="Appointments">
+              <PropertyRef Name="id_master" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Appointments_Pets">
+          <End Role="Pets" Type="Self.Pets" Multiplicity="1" />
+          <End Role="Appointments" Type="Self.Appointments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Pets">
+              <PropertyRef Name="id_pet" />
+            </Principal>
+            <Dependent Role="Appointments">
+              <PropertyRef Name="id_pet" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Appointments_Services">
+          <End Role="Services" Type="Self.Services" Multiplicity="1" />
+          <End Role="Appointments" Type="Self.Appointments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Services">
+              <PropertyRef Name="id_service" />
+            </Principal>
+            <Dependent Role="Appointments">
+              <PropertyRef Name="id_service" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Clients_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="Clients" Type="Self.Clients" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="id_user" />
+            </Principal>
+            <Dependent Role="Clients">
+              <PropertyRef Name="id_user" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Pets_Clients">
+          <End Role="Clients" Type="Self.Clients" Multiplicity="1" />
+          <End Role="Pets" Type="Self.Pets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clients">
+              <PropertyRef Name="id_client" />
+            </Principal>
+            <Dependent Role="Pets">
+              <PropertyRef Name="id_client" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Masters_Specialization">
+          <End Role="Specialization" Type="Self.Specialization" Multiplicity="1" />
+          <End Role="Masters" Type="Self.Masters" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Specialization">
+              <PropertyRef Name="id_specialization" />
+            </Principal>
+            <Dependent Role="Masters">
+              <PropertyRef Name="id_specialization" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_Role">
+          <End Role="Role" Type="Self.Role" Multiplicity="1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="id_role" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="id_role" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ServicePr__id_se__17036CC0">
+          <End Role="Services" Type="Self.Services" Multiplicity="0..1" />
+          <End Role="ServicePrices" Type="Self.ServicePrices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Services">
+              <PropertyRef Name="id_service" />
+            </Principal>
+            <Dependent Role="ServicePrices">
+              <PropertyRef Name="id_service" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ServicePr__id_we__17F790F9">
+          <End Role="WeightCategories" Type="Self.WeightCategories" Multiplicity="0..1" />
+          <End Role="ServicePrices" Type="Self.ServicePrices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WeightCategories">
+              <PropertyRef Name="id_weight_category" />
+            </Principal>
+            <Dependent Role="ServicePrices">
+              <PropertyRef Name="id_weight_category" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="PetSpaEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Appointments" EntityType="Self.Appointments" />
+          <EntitySet Name="Clients" EntityType="Self.Clients" />
+          <EntitySet Name="Masters" EntityType="Self.Masters" />
+          <EntitySet Name="Pets" EntityType="Self.Pets" />
+          <EntitySet Name="Role" EntityType="Self.Role" />
+          <EntitySet Name="ServicePrices" EntityType="Self.ServicePrices" />
+          <EntitySet Name="Services" EntityType="Self.Services" />
+          <EntitySet Name="Specialization" EntityType="Self.Specialization" />
+          <EntitySet Name="Users" EntityType="Self.Users" />
+          <EntitySet Name="WeightCategories" EntityType="Self.WeightCategories" />
+          <AssociationSet Name="FK_Appointments_Clients" Association="Self.FK_Appointments_Clients">
+            <End Role="Clients" EntitySet="Clients" />
+            <End Role="Appointments" EntitySet="Appointments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Appointments_Masters" Association="Self.FK_Appointments_Masters">
+            <End Role="Masters" EntitySet="Masters" />
+            <End Role="Appointments" EntitySet="Appointments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Appointments_Pets" Association="Self.FK_Appointments_Pets">
+            <End Role="Pets" EntitySet="Pets" />
+            <End Role="Appointments" EntitySet="Appointments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Appointments_Services" Association="Self.FK_Appointments_Services">
+            <End Role="Services" EntitySet="Services" />
+            <End Role="Appointments" EntitySet="Appointments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Clients_Users" Association="Self.FK_Clients_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Clients" EntitySet="Clients" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Pets_Clients" Association="Self.FK_Pets_Clients">
+            <End Role="Clients" EntitySet="Clients" />
+            <End Role="Pets" EntitySet="Pets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Masters_Specialization" Association="Self.FK_Masters_Specialization">
+            <End Role="Specialization" EntitySet="Specialization" />
+            <End Role="Masters" EntitySet="Masters" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_Role" Association="Self.FK_Users_Role">
+            <End Role="Role" EntitySet="Role" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ServicePr__id_se__17036CC0" Association="Self.FK__ServicePr__id_se__17036CC0">
+            <End Role="Services" EntitySet="Services" />
+            <End Role="ServicePrices" EntitySet="ServicePrices" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ServicePr__id_we__17F790F9" Association="Self.FK__ServicePr__id_we__17F790F9">
+            <End Role="WeightCategories" EntitySet="WeightCategories" />
+            <End Role="ServicePrices" EntitySet="ServicePrices" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Хранилище PetSpaModelContainer" CdmEntityContainer="PetSpaEntities">
+          <EntitySetMapping Name="Appointments">
+            <EntityTypeMapping TypeName="PetSpaModel.Appointments">
+              <MappingFragment StoreEntitySet="Appointments">
+                <ScalarProperty Name="id_appointments" ColumnName="id_appointments" />
+                <ScalarProperty Name="price" ColumnName="price" />
+                <ScalarProperty Name="data_appointment" ColumnName="data_appointment" />
+                <ScalarProperty Name="time_appointment" ColumnName="time_appointment" />
+                <ScalarProperty Name="id_client" ColumnName="id_client" />
+                <ScalarProperty Name="id_service" ColumnName="id_service" />
+                <ScalarProperty Name="id_master" ColumnName="id_master" />
+                <ScalarProperty Name="id_pet" ColumnName="id_pet" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Clients">
+            <EntityTypeMapping TypeName="PetSpaModel.Clients">
+              <MappingFragment StoreEntitySet="Clients">
+                <ScalarProperty Name="id_client" ColumnName="id_client" />
+                <ScalarProperty Name="full_name" ColumnName="full_name" />
+                <ScalarProperty Name="date_of_birth" ColumnName="date_of_birth" />
+                <ScalarProperty Name="phone" ColumnName="phone" />
+                <ScalarProperty Name="id_user" ColumnName="id_user" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Masters">
+            <EntityTypeMapping TypeName="PetSpaModel.Masters">
+              <MappingFragment StoreEntitySet="Masters">
+                <ScalarProperty Name="id_master" ColumnName="id_master" />
+                <ScalarProperty Name="full_name" ColumnName="full_name" />
+                <ScalarProperty Name="experience" ColumnName="experience" />
+                <ScalarProperty Name="photo" ColumnName="photo" />
+                <ScalarProperty Name="id_specialization" ColumnName="id_specialization" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Pets">
+            <EntityTypeMapping TypeName="PetSpaModel.Pets">
+              <MappingFragment StoreEntitySet="Pets">
+                <ScalarProperty Name="id_pet" ColumnName="id_pet" />
+                <ScalarProperty Name="name_pet" ColumnName="name_pet" />
+                <ScalarProperty Name="weight" ColumnName="weight" />
+                <ScalarProperty Name="birthday" ColumnName="birthday" />
+                <ScalarProperty Name="photo" ColumnName="photo" />
+                <ScalarProperty Name="id_client" ColumnName="id_client" />
+                <ScalarProperty Name="Breed" ColumnName="Breed" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Role">
+            <EntityTypeMapping TypeName="PetSpaModel.Role">
+              <MappingFragment StoreEntitySet="Role">
+                <ScalarProperty Name="id_role" ColumnName="id_role" />
+                <ScalarProperty Name="role1" ColumnName="role" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ServicePrices">
+            <EntityTypeMapping TypeName="PetSpaModel.ServicePrices">
+              <MappingFragment StoreEntitySet="ServicePrices">
+                <ScalarProperty Name="id_service_price" ColumnName="id_service_price" />
+                <ScalarProperty Name="id_service" ColumnName="id_service" />
+                <ScalarProperty Name="id_weight_category" ColumnName="id_weight_category" />
+                <ScalarProperty Name="price" ColumnName="price" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Services">
+            <EntityTypeMapping TypeName="PetSpaModel.Services">
+              <MappingFragment StoreEntitySet="Services">
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="id_service" ColumnName="id_service" />
+                <ScalarProperty Name="name_service" ColumnName="name_service" />
+                <ScalarProperty Name="price" ColumnName="price" />
+                <ScalarProperty Name="photo" ColumnName="photo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Specialization">
+            <EntityTypeMapping TypeName="PetSpaModel.Specialization">
+              <MappingFragment StoreEntitySet="Specialization">
+                <ScalarProperty Name="id_specialization" ColumnName="id_specialization" />
+                <ScalarProperty Name="name_specialization" ColumnName="name_specialization" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="PetSpaModel.Users">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="id_user" ColumnName="id_user" />
+                <ScalarProperty Name="full_name" ColumnName="full_name" />
+                <ScalarProperty Name="id_role" ColumnName="id_role" />
+                <ScalarProperty Name="login" ColumnName="login" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="phone" ColumnName="phone" />
+                <ScalarProperty Name="email" ColumnName="email" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WeightCategories">
+            <EntityTypeMapping TypeName="PetSpaModel.WeightCategories">
+              <MappingFragment StoreEntitySet="WeightCategories">
+                <ScalarProperty Name="id_weight_category" ColumnName="id_weight_category" />
+                <ScalarProperty Name="min_weight" ColumnName="min_weight" />
+                <ScalarProperty Name="max_weight" ColumnName="max_weight" />
+                <ScalarProperty Name="description" ColumnName="description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

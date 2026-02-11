@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="fde4327d04494830a938318470456da2" Name="Diagram1">
+        <EntityTypeShape EntityType="PetSpaModel.Appointments" Width="1.5" PointX="3" PointY="4.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="PetSpaModel.Clients" Width="1.5" PointX="0.75" PointY="9.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="PetSpaModel.Masters" Width="1.5" PointX="0.75" PointY="19.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="PetSpaModel.Pets" Width="1.5" PointX="0.75" PointY="25.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="PetSpaModel.Role" Width="1.5" PointX="1.5" PointY="16.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="PetSpaModel.ServicePrices" Width="1.5" PointX="6" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="PetSpaModel.Services" Width="1.5" PointX="0.75" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="PetSpaModel.Specialization" Width="1.5" PointX="1.5" PointY="22.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="PetSpaModel.Users" Width="1.5" PointX="1.5" PointY="13" IsExpanded="true" />
+        <EntityTypeShape EntityType="PetSpaModel.WeightCategories" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
+        <AssociationConnector Association="PetSpaModel.FK_Appointments_Clients" ManuallyRouted="false" />
+        <AssociationConnector Association="PetSpaModel.FK_Appointments_Masters" ManuallyRouted="false" />
+        <AssociationConnector Association="PetSpaModel.FK_Appointments_Pets" ManuallyRouted="false" />
+        <AssociationConnector Association="PetSpaModel.FK_Appointments_Services" ManuallyRouted="false" />
+        <AssociationConnector Association="PetSpaModel.FK_Clients_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="PetSpaModel.FK_Pets_Clients" ManuallyRouted="false" />
+        <AssociationConnector Association="PetSpaModel.FK_Masters_Specialization" ManuallyRouted="false" />
+        <AssociationConnector Association="PetSpaModel.FK_Users_Role" ManuallyRouted="false" />
+        <AssociationConnector Association="PetSpaModel.FK__ServicePr__id_se__17036CC0" ManuallyRouted="false" />
+        <AssociationConnector Association="PetSpaModel.FK__ServicePr__id_we__17F790F9" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -1,0 +1,149 @@
+﻿<Page x:Class="PetSpa.Views.Pages.AuthorizationPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:PetSpa.Views.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="600" d:DesignWidth="1080"
+      Title="AuthorizationPage">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="140"/>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="343"/>
+            <ColumnDefinition Width="380"/>
+            <ColumnDefinition Width="350"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Авторизация -->
+        <TextBlock Text="Авторизация" Grid.Column="1" Grid.Row="1" 
+                   HorizontalAlignment="Center"
+                   Style="{StaticResource HeaderTextBlockStyle}"/>
+
+        <!-- Поле ввода Кода сотрудника -->
+        <Border Grid.Row="3" Grid.Column="1"
+                CornerRadius="10"
+                Background="#33FFFFFF" BorderBrush="#66FFFFFF"
+                BorderThickness="2"
+                Margin="10,0,10,0"
+                Height="60"
+                Padding="0">
+
+            <TextBox Name="CodeTb"
+                     Text="Код сотрудника"
+                     Foreground="#77FFFFFF"
+                     Style="{StaticResource SemiTransparentTextBoxStyle}"
+                     GotFocus="CodeTb_GotFocus"
+                     LostFocus="CodeTb_LostFocus"/>
+        </Border>
+
+        <!-- Поле ввода Пароля -->
+        <Border Grid.Row="5" Grid.Column="1"
+                CornerRadius="10"
+                Background="#33FFFFFF" BorderBrush="#66FFFFFF"
+                BorderThickness="2"
+                Margin="10,0,10,0"
+                Height="60"
+                Padding="0">
+
+            <Grid>
+                <!-- Поле для ввода пароля (скрытый текст) -->
+                <PasswordBox Name="PasswordTb"
+                             Foreground="#77FFFFFF"
+                             Style="{StaticResource SemiTransparentPasswordBoxStyle}"
+                             GotFocus="PasswordTb_GotFocus"
+                             LostFocus="PasswordTb_LostFocus"
+                             PasswordChanged="PasswordTb_PasswordChanged"
+                             VerticalAlignment="Center"
+                             Padding="40,0,40,0"/>
+
+                <!-- Поле для отображения пароля (видимый текст) -->
+                <TextBox Name="PasswordVisibleTb"
+                         Foreground="#77FFFFFF"
+                         Style="{StaticResource SemiTransparentTextBoxStyle}"
+                         GotFocus="PasswordVisibleTb_GotFocus"
+                         LostFocus="PasswordVisibleTb_LostFocus"
+                         TextChanged="PasswordVisibleTb_TextChanged"
+                         VerticalAlignment="Center"
+                         Padding="40,0,40,0"
+                         Visibility="Collapsed"/>
+
+                <!-- Иконка глазика для показа/скрытия пароля -->
+                <Button Name="TogglePasswordBtn"
+                        Style="{StaticResource TransparentButtonStyle}"
+                        Width="40" Height="40"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Margin="0,0,10,0"
+                        Click="TogglePasswordBtn_Click">
+                    <Image Name="PasswordEyeIcon"
+                           Source="/Resources/Icons/EyeClosed.png"
+                           Width="24" Height="24"
+                           Stretch="Uniform"/>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- Чекбокс и кнопка -->
+        <Grid Grid.Row="7" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="190"/>
+                <ColumnDefinition Width="190"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="160"/>
+                </Grid.ColumnDefinitions>
+
+                <CheckBox Name="RememberMeCb"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"/>
+
+                <TextBlock Grid.Column="1"
+                           Text="Запомнить меня"
+                           VerticalAlignment="Center"
+                           Foreground="White"
+                           FontSize="14"/>
+
+            </Grid>
+
+            <Button Name="ForgetBtn"
+                    Click="ForgetBtn_Click"
+                    Grid.Column="1"
+                    Content="Забыли пароль?"
+                    HorizontalAlignment="Right"
+                    Style="{StaticResource BaseButtonStyle}"/>
+
+        </Grid>
+
+
+        <!-- Кнопка Авторизации -->
+        <Button Name="LoginBtn" Grid.Column="1" Grid.Row="9"
+                Content="Войти"
+                Width="360" Height="60"
+                Style="{StaticResource WhiteOrangeButtonStyle}"
+                Click="LoginBtn_Click"/>
+
+
+        <Button x:Name="RegBtn" Click="RegBtn_Click"
+                Grid.Row="10" Grid.Column="1"
+                Content="Зарегистрироваться"
+                Style="{StaticResource BaseButtonStyle}"/>
+    </Grid>
+</Page>

@@ -1,0 +1,250 @@
+﻿<Page x:Class="PetSpa.Views.Pages.AddClientPetPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:PetSpa.Views.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="600" d:DesignWidth="1080"
+      Title="AddClientPetPage">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="110"/>
+            <ColumnDefinition Width="370"/>
+            <ColumnDefinition Width="80"/>
+            <ColumnDefinition Width="370"/>
+            <ColumnDefinition Width="110"/>
+            <ColumnDefinition Width="20"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="65"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="64"/>
+            <RowDefinition Height="64"/>
+            <RowDefinition Height="64"/>
+            <RowDefinition Height="64"/>
+            <RowDefinition Height="64"/>
+            <RowDefinition Height="64"/>
+            <RowDefinition Height="64"/>
+        </Grid.RowDefinitions>
+
+
+        <!-- Данные клиента -->
+        <TextBlock Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="1" 
+                   Text="Данные клиента" 
+                   HorizontalAlignment="Center"
+                   Foreground="Black" FontSize="30"
+                   Style="{StaticResource BaseTextBlockStyle}"/>
+
+        <!-- ФИО -->
+        <Border Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="3"
+                CornerRadius="10"
+                Background="White"
+                BorderBrush="#66FFFFFF"
+                BorderThickness="2"
+                Width="450" Height="40"
+                HorizontalAlignment="Center">
+            <TextBox Name="FCsTb"
+                     Text="ФИО"
+                     FontSize="14"
+                     Height="30"
+                     VerticalAlignment="Center"
+                     Foreground="#DF6C2D"
+                     GotFocus="FCsTb_GotFocus" LostFocus="FCsTb_LostFocus"
+                     Style="{StaticResource BorderedTextBoxStyle}">
+            </TextBox>
+        </Border>
+
+        <!-- Телефон -->
+        <Border Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="4"
+                CornerRadius="10"
+                Background="White"
+                BorderBrush="#66FFFFFF"
+                BorderThickness="2"
+                Width="450" Height="40"
+                HorizontalAlignment="Center">
+            <TextBox Name="PhoneTb"
+                     Text="Номер телефона"
+                     FontSize="14"
+                     Height="30"
+                     VerticalAlignment="Center"
+                     Foreground="#DF6C2D"
+                     GotFocus="PhoneTb_GotFocus" LostFocus="PhoneTb_LostFocus"
+                     Style="{StaticResource BorderedTextBoxStyle}">
+            </TextBox>
+        </Border>
+
+        <!-- Дата рождения клиента -->
+        <Border Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="5"
+                CornerRadius="10"
+                Background="White"
+                BorderBrush="#66FFFFFF"
+                BorderThickness="2"
+                Width="450" Height="40"
+                HorizontalAlignment="Center">
+            <TextBox Name="ClientBirthdayTb"
+                     Text="Дата рождения"
+                     FontSize="14"
+                     Height="30"
+                     VerticalAlignment="Center"
+                     Foreground="#DF6C2D"
+                     GotFocus="ClientBirthdayTb_GotFocus" LostFocus="ClientBirthdayTb_LostFocus"
+                     Style="{StaticResource BorderedTextBoxStyle}">
+
+            </TextBox>
+        </Border>
+
+        <!-- Данные питомца -->
+        <TextBlock Grid.Column="4" Grid.ColumnSpan="3" Grid.Row="1" 
+                   Text="Данные питомца" 
+                   HorizontalAlignment="Center"
+                   Foreground="Black" FontSize="30"
+                   Style="{StaticResource BaseTextBlockStyle}"/>
+
+        <!-- Комбобокс для выбора питомца -->
+        <Border Grid.Column="4" Grid.Row="3"
+                CornerRadius="10"
+                Background="White"
+                BorderBrush="#66FFFFFF"
+                BorderThickness="2"
+                Width="340" Height="40"
+                HorizontalAlignment="Right">
+            <ComboBox Name="PetsComboBox"
+                      FontSize="14"
+                      Foreground="#DF6C2D"
+                      SelectionChanged="PetsComboBox_SelectionChanged"
+                      Background="Transparent"
+                      BorderThickness="0"
+                      VerticalContentAlignment="Center">
+                <ComboBox.ItemContainerStyle>
+                    <Style TargetType="ComboBoxItem">
+                        <Setter Property="Foreground" Value="#DF6C2D"/>
+                        <Setter Property="FontSize" Value="14"/>
+                        <Setter Property="Padding" Value="10,5"/>
+                    </Style>
+                </ComboBox.ItemContainerStyle>
+            </ComboBox>
+        </Border>
+
+        <!-- Кнопка для добавления питомца рядом с ComboBox -->
+        <Button Name="AddPetBtn" Click="AddPetBtn_Click"
+                Grid.Column="5" Grid.Row="3"
+                Width="40" Height="40"
+                Style="{StaticResource TransparentButtonStyle}"
+                ToolTip="Добавить питомца">
+            <Image Source="/Resources/Icons/PlusIcon.png" Stretch="Uniform"/>
+        </Button>
+
+        <!-- Имя питомца -->
+        <Border Grid.Column="4" Grid.ColumnSpan="3" Grid.Row="4"
+                CornerRadius="10"
+                Background="White"
+                BorderBrush="#66FFFFFF"
+                BorderThickness="2"
+                Width="450" Height="40"
+                HorizontalAlignment="Center">
+            <TextBox Name="PetNameTb"
+                     Text="Имя питомца"
+                     FontSize="14"
+                     Height="30"
+                     VerticalAlignment="Center"
+                     Foreground="#DF6C2D"
+                     GotFocus="PetNameTb_GotFocus" LostFocus="PetNameTb_LostFocus"
+                     Style="{StaticResource BorderedTextBoxStyle}">
+            </TextBox>
+        </Border>
+
+        <!-- Вес питомца -->
+        <Border Grid.Column="4" Grid.ColumnSpan="3" Grid.Row="5"
+                CornerRadius="10"
+                Background="White"
+                BorderBrush="#66FFFFFF"
+                BorderThickness="2"
+                Width="450" Height="40"
+                HorizontalAlignment="Center">
+            <TextBox Name="WeightTb"
+                     Text="Вес"
+                     FontSize="14"
+                     Height="30"
+                     VerticalAlignment="Center"
+                     Foreground="#DF6C2D"
+                     GotFocus="WeightTb_GotFocus" LostFocus="WeightTb_LostFocus"
+                     Style="{StaticResource BorderedTextBoxStyle}">
+            </TextBox>
+        </Border>
+
+        <!-- Дата рождения питомца -->
+        <Border Grid.Column="4" Grid.ColumnSpan="3" Grid.Row="6"
+                CornerRadius="10"
+                Background="White"
+                BorderBrush="#66FFFFFF"
+                BorderThickness="2"
+                Width="450" Height="40"
+                HorizontalAlignment="Center">
+            <TextBox Name="PetBirthdayTb"
+                     Text="Дата рождения"
+                     FontSize="14"
+                     Height="30"
+                     VerticalAlignment="Center"
+                     Foreground="#DF6C2D"
+                     GotFocus="PetBirthdayTb_GotFocus" LostFocus="PetBirthdayTb_LostFocus"
+                     Style="{StaticResource BorderedTextBoxStyle}">
+            </TextBox>
+        </Border>
+
+        <!-- Порода питомца -->
+        <Border Grid.Column="4" Grid.ColumnSpan="3" Grid.Row="7"
+                CornerRadius="10"
+                Background="White"
+                BorderBrush="#66FFFFFF"
+                BorderThickness="2"
+                Width="450" Height="40"
+                HorizontalAlignment="Center">
+            <TextBox Name="PetBreedTb"
+                     Text="Порода"
+                     FontSize="14"
+                     Height="30"
+                     VerticalAlignment="Center"
+                     Foreground="#DF6C2D"
+                     GotFocus="PetBreedTb_GotFocus" LostFocus="PetBreedTb_LostFocus"
+                     Style="{StaticResource BorderedTextBoxStyle}">
+            </TextBox>
+        </Border>
+
+        <!-- Кнопка удалить -->
+        <Button Name="DeleteBtn" 
+                Grid.Column="5" Grid.Row="8"
+                Width="60" Height="60"
+                Style="{StaticResource TransparentButtonStyle}"
+                Click="DeleteBtn_Click"
+                ToolTip="Удалить питомца"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+            <Image Source="/Resources/Icons/TrashIcon.png" Stretch="Uniform"/>
+        </Button>
+
+        <!-- Сохранить -->
+        <Button Name="SaveBtn" Click="SaveBtn_Click"
+                Content="Сохранить" 
+                Grid.Row="7" Grid.Column="2" 
+                Style="{StaticResource OrangeWhiteButtonStyle}"
+                Width="350" Height="50" 
+                HorizontalAlignment="Left"
+                Margin="0"
+                FontSize="16"
+                FontWeight="Bold"/>
+
+        <!-- Отменить -->
+        <Button Name="CancelBtn" Click="CancelBtn_Click"
+                Content="Отменить" 
+                Grid.Row="8" Grid.Column="2"
+                Style="{StaticResource BeigeGrayButtonStyle}"
+                Width="350" Height="50" 
+                HorizontalAlignment="Left"
+                FontSize="16"/>
+    </Grid>
+</Page>
