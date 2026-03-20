@@ -20,21 +20,29 @@ namespace PetSpa.Views.Pages
         private ICollectionView _appointmentsView;
         private string _searchText = "";
 
+        public bool IsAdmin => AuthorizationPage.currentUser?.id_role == 1;
+
         public AppointmentPage()
         {
             InitializeComponent();
             AppointmentViewModels = new ObservableCollection<AppointmentViewModel>();
-            LoadFromDatabase();
 
-            // Создаем CollectionView для группировки и фильтрации
             _appointmentsView = CollectionViewSource.GetDefaultView(AppointmentViewModels);
             _appointmentsView.GroupDescriptions.Add(new PropertyGroupDescription("FormattedDate"));
-
-            // Сортируем по дате и времени
             _appointmentsView.SortDescriptions.Add(new SortDescription("AppointmentDate", ListSortDirection.Descending));
             _appointmentsView.SortDescriptions.Add(new SortDescription("AppointmentTime", ListSortDirection.Ascending));
 
             AppointmentsItemsControl.ItemsSource = _appointmentsView;
+            DataContext = this;
+
+            // Подписываемся на событие загрузки страницы
+            this.Loaded += AppointmentPage_Loaded;
+        }
+
+        private void AppointmentPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            // При каждой загрузке страницы перезагружаем данные
+            LoadFromDatabase();
         }
 
         private void LoadFromDatabase()
@@ -48,7 +56,6 @@ namespace PetSpa.Views.Pages
                     return;
                 }
 
-                // Загружаем записи с связанными данными
                 var appointments = _context.Appointments
                     .Include(a => a.Clients)
                     .Include(a => a.Pets)
@@ -62,12 +69,10 @@ namespace PetSpa.Views.Pages
 
                 foreach (var appointment in appointments)
                 {
-                    // Получаем информацию о клиенте и питомце
                     string petName = appointment.Pets?.name_pet?.Trim() ?? "";
                     string petBreed = appointment.Pets?.Breed?.Trim() ?? "";
                     string petInfo = !string.IsNullOrEmpty(petBreed) ? $"{petName} ({petBreed})" : petName;
 
-                    // Получаем название услуги
                     string serviceName = appointment.Services?.name_service?.Trim() ??
                                          "Услуга";
 
@@ -85,6 +90,9 @@ namespace PetSpa.Views.Pages
 
                     AppointmentViewModels.Add(viewModel);
                 }
+
+                // Обновляем фильтр после загрузки
+                ApplyFilters();
 
                 Debug.WriteLine($"Загружено записей: {AppointmentViewModels.Count}");
             }
@@ -117,6 +125,8 @@ namespace PetSpa.Views.Pages
             {
                 _appointmentsView.Filter = null;
             }
+
+            _appointmentsView.Refresh();
         }
 
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -169,10 +179,8 @@ namespace PetSpa.Views.Pages
             var button = sender as Button;
             if (button != null && button.Tag is AppointmentViewModel appointment)
             {
-                // Переход на страницу редактирования записи с передачей ID записи
                 if (NavigationService != null)
                 {
-                    // Создаем параметр для передачи ID записи
                     var editPage = new EditAppointmentPage(appointment.AppointmentId);
                     NavigationService.Navigate(editPage);
                 }
@@ -184,10 +192,8 @@ namespace PetSpa.Views.Pages
             var button = sender as Button;
             if (button != null && button.Tag is AppointmentViewModel appointment)
             {
-                // Создаем окно подтверждения удаления записи
                 var warningWindow = new WarningDeleteAppointmentWindow();
 
-                // Создаем объект с информацией о записи
                 var appointmentInfo = new
                 {
                     Time = appointment.FormattedTime,
@@ -198,30 +204,20 @@ namespace PetSpa.Views.Pages
                 };
 
                 warningWindow.DataContext = appointmentInfo;
-
-                // Устанавливаем владельца 
                 warningWindow.Owner = Application.Current.MainWindow;
 
                 bool? dialogResult = warningWindow.ShowDialog();
 
-                // Если пользователь подтвердил удаление
                 if (dialogResult == true)
                 {
-                    // Находим запись в базе данных
                     var appointmentToDelete = _context.Appointments.Find(appointment.AppointmentId);
                     if (appointmentToDelete != null)
                     {
-                        // Удаляем запись
                         _context.Appointments.Remove(appointmentToDelete);
                         _context.SaveChanges();
-
-                        // Удаляем из коллекции
                         AppointmentViewModels.Remove(appointment);
-
-                        // Обновляем представление
                         _appointmentsView.Refresh();
 
-                        // Показываем сообщение об успешном удалении
                         MessageBox.Show($"Запись от {appointment.AppointmentDate:dd.MM.yyyy} {appointment.FormattedTime} удалена",
                             "Успешно",
                             MessageBoxButton.OK,

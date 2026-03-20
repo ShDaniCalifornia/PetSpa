@@ -42,7 +42,7 @@
 
             <Button Name ="InfoBtn" Click="InfoBtn_Click" Grid.Column="1"
                     Background="Transparent" BorderBrush="Transparent"
-                    VerticalAlignment="Top" HorizontalAlignment="Left"> 
+                    VerticalAlignment="Top" HorizontalAlignment="Left">
                 <Button.Content>
                     <Image Source="/Resources/Icons/InfoIcon.png"
                         Stretch="Fill" Width="20" Height="20"/>
@@ -50,7 +50,7 @@
             </Button>
 
         </Grid>
-        
+
         <!-- Поле ввода ФИО -->
         <Border Grid.Row="3" Grid.Column="1"
                 CornerRadius="10"
@@ -63,7 +63,9 @@
             <TextBox Name="FCsTb" 
                      Text="ФИО" 
                      Foreground="#77FFFFFF"
-                     Style="{StaticResource SemiTransparentTextBoxStyle}"/>
+                     Style="{StaticResource SemiTransparentTextBoxStyle}"
+                     GotFocus="FCsTb_GotFocus"
+                     LostFocus="FCsTb_LostFocus"/>
         </Border>
 
         <!-- Поле ввода Почты -->
@@ -77,7 +79,9 @@
             <TextBox Name="EmailTb"
                      Text="Почта"
                      Foreground="#77FFFFFF"
-                     Style="{StaticResource SemiTransparentTextBoxStyle}"/>
+                     Style="{StaticResource SemiTransparentTextBoxStyle}"
+                     GotFocus="EmailTb_GotFocus"
+                     LostFocus="EmailTb_LostFocus"/>
         </Border>
 
         <!-- Поле ввода Телефона -->
@@ -92,7 +96,9 @@
             <TextBox Name="PhoneTb"
                      Text="Телефон"   
                      Foreground="#77FFFFFF"
-                     Style="{StaticResource SemiTransparentTextBoxStyle}"/>
+                     Style="{StaticResource SemiTransparentTextBoxStyle}"
+                     GotFocus="PhoneTb_GotFocus"
+                     LostFocus="PhoneTb_LostFocus"/>
         </Border>
 
         <!-- Кнопка Регистрации -->
@@ -100,7 +106,8 @@
                 BorderThickness="0"
                 Content="Зарегистрироваться"
                 Width="360" Height="60"
-                Style="{StaticResource WhiteOrangeButtonStyle}"/>
+                Style="{StaticResource WhiteOrangeButtonStyle}"
+                Click="RegBtn_Click"/>
 
         <!-- Кнопка Войти -->
         <Button x:Name="SignUpBtn" Click="SignUpBtn_Click"

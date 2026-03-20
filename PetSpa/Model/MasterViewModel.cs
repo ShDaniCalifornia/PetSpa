@@ -7,9 +7,9 @@
         public string Experience { get; set; }
         public string PhotoUrl { get; set; }
         public string SpecializationName { get; set; }
-        public string[] Skills { get; set; } // Массив навыков/достижений
+        public string[] Skills { get; set; }
+        public bool IsAdmin { get; set; }
 
-        // Для поиска
         public string SearchText =>
             $"{FullName} {Experience} {SpecializationName} {string.Join(" ", Skills)}";
     }

@@ -16,7 +16,6 @@ namespace PetSpa.Views.Pages
     public partial class PricePage : Page, INotifyPropertyChanged
     {
         private readonly PetSpaEntities _context = App.context;
-
         private List<ServiceViewModel> _allServices = new List<ServiceViewModel>();
         private int _currentPage = 0;
         private const int ServicesPerPage = 3;
@@ -27,8 +26,9 @@ namespace PetSpa.Views.Pages
         private string _currentServiceName1 = "";
         private string _currentServiceName2 = "";
         private string _currentServiceName3 = "";
-
         private bool _isTableVisible = true;
+
+        public bool IsAdmin => AuthorizationPage.currentUser?.id_role == 1;
 
         public bool IsTableVisible
         {
@@ -65,13 +65,13 @@ namespace PetSpa.Views.Pages
             InitializeDataContext();
             LoadServicesFromDatabase();
             LoadCurrentPage();
+            DataContext = this;
         }
 
         private void InitializeDataContext()
         {
             CurrentPageServices = new ObservableCollection<ServiceViewModel>();
             PriceTableRows = new ObservableCollection<PriceTableRow>();
-            DataContext = this;
         }
 
         private void LoadServicesFromDatabase()
@@ -80,7 +80,6 @@ namespace PetSpa.Views.Pages
             {
                 _allServices.Clear();
 
-                // Загружаем услуги с весовыми категориями
                 var services = _context.Services
                     .Include(s => s.ServicePrices)
                     .Include("ServicePrices.WeightCategories")
@@ -91,21 +90,23 @@ namespace PetSpa.Views.Pages
                 foreach (var service in services)
                 {
                     Debug.WriteLine($"Услуга: {service.name_service}, Цена: {service.price}, Описание: {service.description}, Фото: {service.photo}");
-
                     var serviceVM = new ServiceViewModel(service);
                     _allServices.Add(serviceVM);
                 }
 
-                // Добавляем карточку "Добавить прайс"
-                _allServices.Add(new ServiceViewModel()
+                // Добавляем карточку "Добавить прайс" только для администратора
+                if (IsAdmin)
                 {
-                    ServiceId = -1,
-                    Name = "Добавить прайс",
-                    IsAddCard = true,
-                    PhotoUrl = null,
-                    Description = "",
-                    Price = 0m
-                });
+                    _allServices.Add(new ServiceViewModel()
+                    {
+                        ServiceId = -1,
+                        Name = "Добавить прайс",
+                        IsAddCard = true,
+                        PhotoUrl = null,
+                        Description = "",
+                        Price = 0m
+                    });
+                }
 
                 Debug.WriteLine($"Всего карточек: {_allServices.Count}");
             }
@@ -183,7 +184,6 @@ namespace PetSpa.Views.Pages
                     .Select(s => s.ServiceId)
                     .ToList();
 
-                // Загружаем услуги с ценами по весовым категориям
                 var services = _context.Services
                     .Include(s => s.ServicePrices.Select(sp => sp.WeightCategories))
                     .Where(s => serviceIds.Contains(s.id_service))
@@ -195,7 +195,6 @@ namespace PetSpa.Views.Pages
                     var priceList2 = GetWeightCategoryPrices(services[1]);
                     var priceList3 = GetWeightCategoryPrices(services[2]);
 
-                    // Используем стандартные весовые категории для отображения
                     var weightCategories = new[]
                     {
                         "<2,5 кг",
@@ -204,7 +203,6 @@ namespace PetSpa.Views.Pages
                         ">10,6 кг"
                     };
 
-                    // Отображаем первые 4 весовые категории
                     int categoriesToShow = Math.Min(weightCategories.Length, 4);
 
                     for (int i = 0; i < categoriesToShow; i++)
@@ -223,7 +221,6 @@ namespace PetSpa.Views.Pages
             {
                 MessageBox.Show($"Ошибка загрузки цен: {ex.Message}",
                     "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
-                // Не показываем тестовые данные - таблица останется пустой
                 Debug.WriteLine($"Ошибка загрузки цен: {ex.Message}");
             }
         }
@@ -234,41 +231,35 @@ namespace PetSpa.Views.Pages
             {
                 var prices = new List<decimal>();
 
-                // Проверяем, есть ли связанные цены в ServicePrices
                 if (service.ServicePrices != null && service.ServicePrices.Any())
                 {
                     Debug.WriteLine($"Для услуги '{service.name_service}' найдено {service.ServicePrices.Count} цен");
 
-                    // Сортируем по весовым категориям (по возрастанию минимального веса)
                     var sortedPrices = service.ServicePrices
                         .Where(sp => sp.price.HasValue && sp.WeightCategories != null)
                         .OrderBy(sp => sp.WeightCategories.min_weight)
-                        .Select(sp => Math.Round(sp.price.Value, 0)) // Округляем до целых
+                        .Select(sp => Math.Round(sp.price.Value, 0))
                         .ToList();
 
                     if (sortedPrices.Any())
                     {
                         Debug.WriteLine($"Отсортированные цены: {string.Join(", ", sortedPrices)}");
-
-                        // Если есть меньше 4 цен, дополняем
                         while (sortedPrices.Count < 4)
                         {
                             decimal lastPrice = sortedPrices.LastOrDefault();
                             sortedPrices.Add(Math.Round(lastPrice * 1.2m, 0));
                         }
-
                         return sortedPrices.Take(4).ToList();
                     }
                 }
 
-                // Если не удалось получить цены из ServicePrices, создаем на основе базовой цены
-                decimal basePrice = Math.Round(service.price, 0); // Округляем базовую цену
+                decimal basePrice = Math.Round(service.price, 0);
                 var defaultPrices = new List<decimal>
                 {
-                    Math.Round(basePrice * 0.9m, 0),    // <2,5 кг
-                    basePrice,                          // 2,6-5,5 кг
-                    Math.Round(basePrice * 1.2m, 0),    // 5,6-10,5 кг
-                    Math.Round(basePrice * 1.5m, 0)     // >10,6 кг
+                    Math.Round(basePrice * 0.9m, 0),
+                    basePrice,
+                    Math.Round(basePrice * 1.2m, 0),
+                    Math.Round(basePrice * 1.5m, 0)
                 };
 
                 Debug.WriteLine($"Используются цены по умолчанию для услуги '{service.name_service}': {string.Join(", ", defaultPrices)}");

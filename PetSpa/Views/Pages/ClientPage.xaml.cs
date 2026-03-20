@@ -11,17 +11,14 @@ using System.Windows.Media;
 
 namespace PetSpa.Views.Pages
 {
-    /// <summary>
-    /// Логика взаимодействия для ClientPage.xaml
-    /// </summary>
     public partial class ClientPage : Page
     {
         private Model.PetSpaEntities _context = App.context;
         public ObservableCollection<Model.ClientViewModel> ClientViewModels { get; private set; }
         private System.ComponentModel.ICollectionView _clientsView;
-
-        // Для поиска
         private string _searchText = "";
+
+        public bool IsAdmin => AuthorizationPage.currentUser?.id_role == 1;
 
         public ClientPage()
         {
@@ -31,6 +28,13 @@ namespace PetSpa.Views.Pages
 
             _clientsView = System.Windows.Data.CollectionViewSource.GetDefaultView(ClientViewModels);
 
+            // Подписываемся на событие загрузки страницы
+            this.Loaded += ClientPage_Loaded;
+        }
+
+        private void ClientPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            // При каждой загрузке страницы перезагружаем данные
             LoadFromDatabase();
         }
 
@@ -61,10 +65,10 @@ namespace PetSpa.Views.Pages
                         FormattedPhone = FormatPhone(client.phone),
                         BirthDate = client.date_of_birth,
                         BirthDateText = client.date_of_birth.ToString("dd.MM.yyyy"),
-                        ClientId = client.id_client
+                        ClientId = client.id_client,
+                        IsAdmin = IsAdmin
                     };
 
-                    // Получаем последний визит
                     if (client.Appointments != null && client.Appointments.Any())
                     {
                         var lastAppointment = client.Appointments
@@ -90,7 +94,6 @@ namespace PetSpa.Views.Pages
                         viewModel.LastVisitDate = null;
                     }
 
-                    // Получаем информацию о питомце
                     if (client.Pets != null && client.Pets.Any())
                     {
                         var firstPet = client.Pets.First();
@@ -98,51 +101,27 @@ namespace PetSpa.Views.Pages
                         viewModel.PetWeight = firstPet.weight.ToString();
                         viewModel.PetPhotoUrl = firstPet.photo?.Trim();
 
-                        // Дата рождения питомца
                         DateTime petBirthday = firstPet.birthday;
                         DateTime today = DateTime.Today;
-
-                        // Сохраняем дату рождения питомца
                         viewModel.PetBirthDate = petBirthday;
 
-                        // Вычисляем возраст
                         int age = today.Year - petBirthday.Year;
+                        if (petBirthday.Date > today.AddYears(-age)) age--;
 
-                        if (petBirthday.Date > today.AddYears(-age))
-                        {
-                            age--;
-                        }
-
-                        // Формируем текст возраста
                         string formattedAge;
                         if (age == 0)
                         {
                             int months = (today.Year - petBirthday.Year) * 12 + today.Month - petBirthday.Month;
                             if (months <= 0) months = 1;
+                            if (months == 1) formattedAge = "1 месяц";
+                            else if (months >= 2 && months <= 4) formattedAge = $"{months} месяца";
+                            else if (months >= 5 && months <= 12) formattedAge = $"{months} месяцев";
+                            else formattedAge = $"{months} месяцев";
+                        }
+                        else if (age == 1) formattedAge = "1 год";
+                        else if (age >= 2 && age <= 4) formattedAge = $"{age} года";
+                        else formattedAge = $"{age} лет";
 
-                            if (months == 1)
-                                formattedAge = "1 месяц";
-                            else if (months >= 2 && months <= 4)
-                                formattedAge = $"{months} месяца";
-                            else if (months >= 5 && months <= 12)
-                                formattedAge = $"{months} месяцев";
-                            else
-                                formattedAge = $"{months} месяцев";
-                        }
-                        else if (age == 1)
-                        {
-                            formattedAge = "1 год";
-                        }
-                        else if (age >= 2 && age <= 4)
-                        {
-                            formattedAge = $"{age} года";
-                        }
-                        else
-                        {
-                            formattedAge = $"{age} лет";
-                        }
-
-                        // Формируем полный текст
                         string ageText = $"{petBirthday:dd.MM.yyyy} ({formattedAge})";
                         ageText = ageText.Replace(">", "").Trim();
                         viewModel.PetAgeText = ageText;
@@ -164,7 +143,7 @@ namespace PetSpa.Views.Pages
                     ClientsLb.ItemsSource = _clientsView;
                 }
 
-                // Начальные фильтры
+                // Обновляем фильтр после загрузки
                 ApplyFilters();
 
                 Debug.WriteLine($"Загружено клиентов: {ClientViewModels.Count}");
@@ -176,12 +155,10 @@ namespace PetSpa.Views.Pages
             }
         }
 
-        // Метод применения всех фильтров
         private void ApplyFilters()
         {
-            if (_clientsView == null) return; // Проверяем на null
+            if (_clientsView == null) return;
 
-            // Фильтрация по поиску
             if (!string.IsNullOrWhiteSpace(_searchText))
             {
                 string searchLower = _searchText.ToLower();
@@ -200,38 +177,33 @@ namespace PetSpa.Views.Pages
             }
             else
             {
-                _clientsView.Filter = null; // Сбрасываем фильтр если поиск пустой
+                _clientsView.Filter = null;
             }
 
-            // Сортировка
             _clientsView.SortDescriptions.Clear();
 
             switch (FilterComboBox.SelectedIndex)
             {
-                case 1: // По дате рождения клиента
+                case 1:
                     _clientsView.SortDescriptions.Add(
                         new System.ComponentModel.SortDescription("BirthDate",
                         System.ComponentModel.ListSortDirection.Ascending));
                     break;
-
-                case 2: // По дате рождения питомца
+                case 2:
                     _clientsView.SortDescriptions.Add(
                         new System.ComponentModel.SortDescription("PetBirthDate",
                         System.ComponentModel.ListSortDirection.Ascending));
                     break;
-
-                case 3: // По дате визита
+                case 3:
                     _clientsView.SortDescriptions.Add(
                         new System.ComponentModel.SortDescription("LastVisitDate",
                         System.ComponentModel.ListSortDirection.Descending));
                     break;
             }
 
-            // Обновляем представление
             _clientsView.Refresh();
         }
 
-        // Обработчик поиска
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (SearchTextBox.Text != "Поиск")
@@ -246,7 +218,6 @@ namespace PetSpa.Views.Pages
             }
         }
 
-        // Обработчик ComboBox
         private void FilterComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ApplyFilters();
@@ -255,7 +226,6 @@ namespace PetSpa.Views.Pages
         private string FormatPhone(string phone)
         {
             if (string.IsNullOrWhiteSpace(phone)) return "";
-
             string digits = new string(phone.Where(char.IsDigit).ToArray());
 
             if (digits.Length == 11)
@@ -266,7 +236,6 @@ namespace PetSpa.Views.Pages
             {
                 return $"8 ({digits.Substring(0, 3)}) {digits.Substring(3, 3)} {digits.Substring(6, 2)} {digits.Substring(8, 2)}";
             }
-
             return phone;
         }
 
@@ -298,18 +267,12 @@ namespace PetSpa.Views.Pages
             var button = sender as Button;
             if (button != null && button.Tag is Model.ClientViewModel client)
             {
-                // Создаем и показываем окно редактирования
                 EditClientWindow editWindow = new EditClientWindow(client.ClientId);
-
-                // Устанавливаем владельца
                 editWindow.Owner = Application.Current.MainWindow;
-
                 bool? result = editWindow.ShowDialog();
-
-                // Если данные были сохранены, обновляем список
                 if (result == true)
                 {
-                    LoadFromDatabase(); // Перезагружаем данные клиентов
+                    LoadFromDatabase();
                 }
             }
         }
@@ -319,7 +282,6 @@ namespace PetSpa.Views.Pages
             var button = sender as Button;
             if (button != null && button.Tag is Model.ClientViewModel client)
             {
-                // Открываем окно подтверждения удаления
                 var warningWindow = new WarningDeletePetWindow();
                 warningWindow.DataContext = client;
                 warningWindow.Owner = Application.Current.MainWindow;
@@ -328,33 +290,23 @@ namespace PetSpa.Views.Pages
 
                 if (dialogResult == true)
                 {
-                    // Клиент и данные
                     var clientToDelete = _context.Clients
-                        .Include(c => c.Pets) // Загружаем питомцев
-                        .Include(c => c.Appointments) // Загружаем записи
+                        .Include(c => c.Pets)
+                        .Include(c => c.Appointments)
                         .FirstOrDefault(c => c.id_client == client.ClientId);
 
                     if (clientToDelete != null)
                     {
-                        // Удаляем все записи на прием этого клиента
                         if (clientToDelete.Appointments != null && clientToDelete.Appointments.Any())
                         {
                             _context.Appointments.RemoveRange(clientToDelete.Appointments);
                         }
-
-                        // Удаляем всех питомцев клиента
                         if (clientToDelete.Pets != null && clientToDelete.Pets.Any())
                         {
                             _context.Pets.RemoveRange(clientToDelete.Pets);
                         }
-
-                        // Удаляем самого клиента
                         _context.Clients.Remove(clientToDelete);
-
-                        // Сохраняем все изменения
                         _context.SaveChanges();
-
-                        // Перезагружаем данные
                         LoadFromDatabase();
 
                         MessageBox.Show($"Клиент {client.FullName} удален",

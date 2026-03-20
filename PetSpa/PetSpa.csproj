@@ -278,6 +278,9 @@
     <Compile Include="Views\Pages\MastersPage.xaml.cs">
       <DependentUpon>MastersPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Pages\MyAppointmentsPage.xaml.cs">
+      <DependentUpon>MyAppointmentsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Pages\PanelAddClientPage.xaml.cs">
       <DependentUpon>PanelAddClientPage.xaml</DependentUpon>
     </Compile>
@@ -417,6 +420,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Pages\MastersPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Pages\MyAppointmentsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

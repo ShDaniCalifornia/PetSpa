@@ -4,9 +4,14 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:PetSpa.Views.Pages"
+      xmlns:appdata="clr-namespace:PetSpa.AppData"
       mc:Ignorable="d" 
       d:DesignHeight="600" d:DesignWidth="1080"
       Title="ClientPage">
+
+    <Page.Resources>
+        <appdata:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Page.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -58,21 +63,23 @@
             </Grid>
         </Border>
 
-        <!-- Кнопка добавить клиента -->
+        <!-- Кнопка добавить клиента (только для админа) -->
         <Button Name="AddClientBtn" Click="AddClientBtn_Click"
                 Grid.Row="1" Grid.Column="3"
                 Style="{StaticResource BeigeGrayButtonStyle}"
                 Content="Добавить клиента"
-                Width="200" Height="40"/>
+                Width="200" Height="40"
+                Visibility="{Binding IsAdmin, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
-        <!-- Комбобокс сортировки -->
+        <!-- Комбобокс сортировки (только для админа) -->
         <ComboBox Name="FilterComboBox" 
                   Grid.Row="1" Grid.Column="5"
                   Width="140" Height="30"
                   FontSize="20"
                   SelectedIndex="0"
                   SelectionChanged="FilterComboBox_SelectionChanged"
-                  Style="{StaticResource ComboboxStyle}">
+                  Style="{StaticResource ComboboxStyle}"
+                  Visibility="{Binding IsAdmin, Converter={StaticResource BooleanToVisibilityConverter}}">
             <ComboBoxItem Content="Сортировка"/>
             <ComboBoxItem Content="По дате рождения клиента"/>
             <ComboBoxItem Content="По дате рождения питомца"/>
@@ -102,7 +109,6 @@
                 </ControlTemplate>
             </ListBox.Template>
 
-            <!-- Стиль для ListBoxItem -->
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="Background" Value="Transparent"/>
@@ -128,7 +134,6 @@
 
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <!-- Одна вертикальная колонка -->
                     <StackPanel Orientation="Vertical" 
                        HorizontalAlignment="Center"/>
                 </ItemsPanelTemplate>
@@ -136,7 +141,6 @@
 
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <!-- Вытянутая овальная карточка -->
                     <Border Background="#FAE9DF" 
                             Margin="10,15" 
                             Padding="25 0 25 0"
@@ -145,96 +149,69 @@
                             Height="130">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <!-- Фото питомца -->
                                 <ColumnDefinition Width="auto"/>
-                                <!-- Отступ -->
                                 <ColumnDefinition Width="40"/>
-                                <!-- ФИО, телефон и даты -->
                                 <ColumnDefinition Width="450"/>
-                                <!-- Отступ -->
                                 <ColumnDefinition Width="3"/>
-                                <!-- Питомец и информация -->
                                 <ColumnDefinition Width="200"/>
-                                <!-- Отступ -->
                                 <ColumnDefinition Width="3"/>
-                                <!-- Кнопки -->
                                 <ColumnDefinition Width="200"/>
                             </Grid.ColumnDefinitions>
 
-                            <!-- Фото питомца (круглая) -->
                             <Grid Grid.Column="0"
                                   Width="70" Height="70"
                                   VerticalAlignment="Center"
                                   ToolTip="{Binding PetInfo}">
-
-                                <!-- Внешний круг с обводкой -->
                                 <Ellipse Stroke="#DF6C2D"
                                          StrokeThickness="2"
                                          Fill="#E0E0E0"/>
-
-                                <!-- Изображение внутри -->
                                 <Ellipse Width="66" Height="66">
                                     <Ellipse.Fill>
-                                        <!-- Обрезка -->
                                         <ImageBrush ImageSource="{Binding PetPhotoUrl}"
                                                     Stretch="UniformToFill"/>
                                     </Ellipse.Fill>
                                 </Ellipse>
                             </Grid>
 
-                            <!-- Отступ -->
                             <Grid Grid.Column="3" Background="White"/>
 
-
-                            <!-- ФИО, телефон и даты (вертикально) -->
                             <StackPanel Grid.Column="2" VerticalAlignment="Center">
                                 <StackPanel Orientation="Horizontal" 
                                             Margin="0,0,0,15">
-                                    <!-- ФИО -->
                                     <TextBlock FontWeight="Bold" FontSize="16" 
                                                Foreground="#DF6C2D" TextWrapping="Wrap"
                                                VerticalAlignment="Center">
                                         <Run Text="{Binding FullName}"/>
                                     </TextBlock>
-
-                                    <!-- Телефон справа от ФИО -->
                                     <TextBlock FontSize="14" Foreground="#DF6C2D"
                                                Margin="30,0,0,0"
                                                VerticalAlignment="Center">
                                         <Run Text="{Binding FormattedPhone}"/>
                                     </TextBlock>
                                 </StackPanel>
-
-                                <!-- Последний визит -->
                                 <TextBlock FontSize="13" Foreground="#DF6C2D"
                                            Margin="0,0,0,5">
-                            <Run Text="Последний визит:"/>
-                            <LineBreak/>
-                            <Run Text="{Binding LastVisitText}" 
-                                 FontWeight="SemiBold"/>
+                                    <Run Text="Последний визит:"/>
+                                    <LineBreak/>
+                                    <Run Text="{Binding LastVisitText}" 
+                                         FontWeight="SemiBold"/>
                                 </TextBlock>
-
-                                <!-- Дата рождения -->
                                 <TextBlock FontSize="13" Foreground="#DF6C2D">
-                            <Run Text="Дата рождения:"/>
-                            <LineBreak/>
-                            <Run Text="{Binding BirthDateText}" 
-                                 FontWeight="SemiBold"/>
+                                    <Run Text="Дата рождения:"/>
+                                    <LineBreak/>
+                                    <Run Text="{Binding BirthDateText}" 
+                                         FontWeight="SemiBold"/>
                                 </TextBlock>
                             </StackPanel>
 
-                            <!-- Информация о питомце -->
                             <StackPanel Grid.Column="4" VerticalAlignment="Center"
                                         HorizontalAlignment="Center">
-                                <!-- Название питомца -->
                                 <TextBlock FontSize="15" FontWeight="Bold" 
                                            HorizontalAlignment="Center"
                                            TextWrapping="Wrap"
                                            Foreground="#DF6C2D"
                                            Text="{Binding PetInfo}"
                                            Margin="0,0,0,10"/>
-
-                                <!-- Вес -->
                                 <Border Background="#FFE4D1" 
                                         CornerRadius="10" 
                                         Padding="12,6"
@@ -242,13 +219,11 @@
                                         HorizontalAlignment="Center">
                                     <TextBlock Foreground="#DF6C2D" FontSize="12"
                                                FontWeight="Bold">
-                                <Run Text="Вес: "/>
-                                <Run Text="{Binding PetWeight}"/>
-                                <Run Text=" кг"/>
+                                        <Run Text="Вес: "/>
+                                        <Run Text="{Binding PetWeight}"/>
+                                        <Run Text=" кг"/>
                                     </TextBlock>
                                 </Border>
-
-                                <!-- Возраст -->
                                 <Border Background="#FFE4D1" 
                                         CornerRadius="10" 
                                         Padding="12,6"
@@ -262,14 +237,12 @@
                                 </Border>
                             </StackPanel>
 
-                            <!-- Отступ -->
                             <Grid Grid.Column="5" Background="White"/>
 
-                            <!-- Кнопки редактировать и удалить -->
                             <StackPanel Grid.Column="6" 
-                                Orientation="Vertical" 
-                                VerticalAlignment="Center">
-                                <!-- Кнопка редактировать -->
+                                        Orientation="Vertical" 
+                                        VerticalAlignment="Center"
+                                        Visibility="{Binding IsAdmin, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Button Name="EditBtn" 
                                         Style="{StaticResource TransparentButtonStyle}"
                                         Tag="{Binding}"
@@ -278,11 +251,9 @@
                                         ToolTip="Редактировать клиента">
                                     <StackPanel Orientation="Horizontal">
                                         <Image Source="/Resources/Icons/EditIcon.png"
-                                       Stretch="Fill" Width="40" Height="40"/>
+                                               Stretch="Fill" Width="40" Height="40"/>
                                     </StackPanel>
                                 </Button>
-
-                                <!-- Кнопка удалить -->
                                 <Button Name="DeleteBtn" 
                                         Style="{StaticResource TransparentButtonStyle}"
                                         Tag="{Binding}"
@@ -290,7 +261,7 @@
                                         ToolTip="Удалить клиента">
                                     <StackPanel Orientation="Horizontal">
                                         <Image Source="/Resources/Icons/TrashIcon.png"
-                                       Stretch="Fill" Width="40" Height="45"/>
+                                               Stretch="Fill" Width="40" Height="45"/>
                                     </StackPanel>
                                 </Button>
                             </StackPanel>

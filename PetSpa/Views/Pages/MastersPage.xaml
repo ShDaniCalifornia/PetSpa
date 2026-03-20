@@ -4,9 +4,14 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:PetSpa.Views.Pages"
+      xmlns:appdata="clr-namespace:PetSpa.AppData"
       mc:Ignorable="d" 
       d:DesignHeight="600" d:DesignWidth="1080"
       Title="MastersPage" Background="White">
+
+    <Page.Resources>
+        <appdata:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Page.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -25,7 +30,6 @@
 
         <Image Source="/Resources/Images/DogImage1.png" Grid.Column="2" Grid.Row="3" Margin="100 150 -50 0"/>
 
-        
         <!-- Поле поиска -->
         <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
                  Name="SearchTextBox"
@@ -46,7 +50,6 @@
 
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <!-- Вертикальный стек вместо WrapPanel -->
                         <StackPanel Orientation="Vertical"
                                    HorizontalAlignment="Center"/>
                     </ItemsPanelTemplate>
@@ -54,25 +57,18 @@
 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <!-- Карточка мастера в 2 колонки -->
                         <Border Background="Transparent" 
                                 Margin="10,10" 
                                 Padding="0"
                                 CornerRadius="25"
                                 Width="980"
                                 Height="280">
-                            <!-- Ниже для вертикального списка -->
-
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <!-- Фото (вертикальный прямоугольник) -->
                                     <ColumnDefinition Width="200"/>
-                                    <!-- Шире фото -->
-                                    <!-- Информация -->
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <!-- Фото мастера (вертикальный прямоугольник слева) -->
                                 <Border Grid.Column="0"
                                         Background="Transparent"
                                         CornerRadius="25,0,0,25">
@@ -82,20 +78,17 @@
                                            HorizontalAlignment="Stretch"/>
                                 </Border>
 
-                                <!-- Информация справа -->
                                 <ScrollViewer Grid.Column="1"
                                               VerticalScrollBarVisibility="Auto"
                                               Padding="25">
                                     <StackPanel>
-                                        <!-- ФИО -->
                                         <TextBlock Text="{Binding FullName}"
                                                    FontSize="20"
                                                    FontWeight="Bold"
                                                    Foreground="#DF6C2D"
                                                    TextWrapping="Wrap"
                                                    Margin="0,0,0,15"/>
-                                        
-                                        <!-- Опыт -->
+
                                         <TextBlock FontSize="16" 
                                                    Foreground="#DF6C2D"
                                                    Margin="0,0,0,8">
@@ -103,29 +96,25 @@
                                             <Run Text="{Binding Experience}"/>
                                             <Run Text=" лет"/>
                                         </TextBlock>
-                                        
-                                        <!-- Специализация -->
+
                                         <TextBlock FontSize="16"
                                                    Foreground="#DF6C2D"
                                                    Margin="0,0,0,25">
                                             <Run Text="✔ работает с "/>
                                             <Run Text="{Binding SpecializationName}"/>
                                         </TextBlock>
-                                        
-                                        <!-- Разделитель -->
+
                                         <Border Height="2" 
                                                 Background="#DF6C2D" 
                                                 Margin="0,0,0,20" 
                                                 Opacity="0.3"/>
-                                        
-                                        <!-- Заголовок "О мастере" -->
+
                                         <TextBlock Text="О мастере"
                                                    FontSize="18" 
                                                    FontWeight="Bold"
                                                    Foreground="#DF6C2D"
                                                    Margin="0,0,0,15"/>
-                                        
-                                        <!-- Список навыков/достояжений -->
+
                                         <ItemsControl ItemsSource="{Binding Skills}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>

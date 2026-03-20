@@ -80,14 +80,15 @@
             </Border>
         </DataTemplate>
 
-        <!-- Шаблон для карточки "Добавить прайс" -->
+        <!-- Шаблон для карточки "Добавить прайс" (только для админа) -->
         <DataTemplate x:Key="AddCardTemplate">
             <Border Width="280" Height="300"
                     Margin="20,10"
                     Background="#DF6C2D"
                     CornerRadius="15"
                     Cursor="Hand"
-                    MouseLeftButtonDown="AddPriceCard_MouseLeftButtonDown">
+                    MouseLeftButtonDown="AddPriceCard_MouseLeftButtonDown"
+                    Visibility="{Binding IsAdmin, Converter={StaticResource BooleanToVisibilityConverter}}">
 
                 <Border.Style>
                     <Style TargetType="Border">

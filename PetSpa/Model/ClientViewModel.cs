@@ -2,7 +2,6 @@
 
 namespace PetSpa.Model
 {
-
     public class ClientViewModel
     {
         public string FullName { get; set; }
@@ -18,6 +17,7 @@ namespace PetSpa.Model
         public string PetAgeText { get; set; }
         public int ClientId { get; set; }
         public string PetPhotoUrl { get; set; }
+        public bool IsAdmin { get; set; }
 
         public string SearchText =>
             $"{FullName} {Phone} {PetInfo} {PetWeight} {PetAgeText} {FormattedPhone}";

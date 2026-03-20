@@ -9,12 +9,10 @@ namespace PetSpa.ViewModels
         private Users _currentUser;
 
         public string FullName => _currentUser?.full_name ?? "Не указано";
-
         public string RoleName => _currentUser?.Role?.role1 ?? "Роль не определена";
-
         public string Phone => _currentUser?.phone ?? "Не указан";
-
         public string Email => _currentUser?.email ?? "Не указан";
+        public bool IsAdmin => _currentUser?.id_role == 1;
 
         public ProfileViewModel(Users user)
         {

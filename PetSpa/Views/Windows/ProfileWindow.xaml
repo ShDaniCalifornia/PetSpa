@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PetSpa.Views.Windows"
+        xmlns:appdata="clr-namespace:PetSpa.AppData"
         mc:Ignorable="d"
         Height="400" Width="280"
         WindowStyle="None"
@@ -11,36 +12,35 @@
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize">
 
-    <Grid>
+    <Window.Resources>
+        <appdata:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
 
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="300"/>
             <RowDefinition Height="100"/>
         </Grid.RowDefinitions>
 
-        <!-- Контейнер с закругленными верхними углами -->
+        <!-- Фото для админа (видно когда IsAdmin = true) -->
         <Border Grid.Row="0" Grid.RowSpan="2"
                 CornerRadius="30,30,0,0"
-                ClipToBounds="True">
+                ClipToBounds="True"
+                Visibility="{Binding IsAdmin, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Image Source="/Resources/Images/adminPhoto.png" 
+                   Stretch="UniformToFill"/>
+        </Border>
 
-            <!-- Внутренний контейнер для фото -->
-            <Grid>
-                <!-- Фото с закругленными углами -->
-                <Border CornerRadius="35"
-                        BorderThickness="2">
-                    <!-- Обрезка -->
-                    <Border.Clip>
-                        <RectangleGeometry RadiusX="30" RadiusY="30">
-                            <RectangleGeometry.Rect>
-                                <Rect Width="280" Height="350"/>
-                            </RectangleGeometry.Rect>
-                        </RectangleGeometry>
-                    </Border.Clip>
-
-                    <Image Source="/Resources/Images/adminPhoto.png" 
-                           Stretch="UniformToFill"/>
-                </Border>
-            </Grid>
+        <!-- Оранжевый фон с лапкой для клиента (видно когда IsAdmin = false) -->
+        <Border Grid.Row="0" Grid.RowSpan="2"
+                CornerRadius="30,30,0,0"
+                Background="#DF6C2D"
+                Visibility="{Binding IsAdmin, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=invert}">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock Text="🐾" FontSize="80" Foreground="White"/>
+                <TextBlock Text="PetSpa" FontSize="20" Foreground="White" 
+                           HorizontalAlignment="Center" Margin="0,10,0,0"/>
+            </StackPanel>
         </Border>
 
         <Grid Grid.Row="1">
@@ -59,7 +59,6 @@
                 <StackPanel Margin="15,10"
                         VerticalAlignment="Center">
 
-                    <!-- Имя и Фамилия -->
                     <TextBlock Text="{Binding FullName}"
                            FontWeight="Bold" 
                            FontSize="16" 
@@ -69,7 +68,6 @@
                            TextAlignment="Center"
                            Margin="0,0,0,5"/>
 
-                    <!-- Должность -->
                     <TextBlock Text="{Binding RoleName}"
                            FontSize="14"
                            FontWeight="SemiBold"
@@ -77,7 +75,6 @@
                            HorizontalAlignment="Center"
                            Margin="0,0,0,8"/>
 
-                    <!-- Телефон -->
                     <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Center"
                             Margin="0,0,0,5">
@@ -86,7 +83,6 @@
                                Foreground="White"/>
                     </StackPanel>
 
-                    <!-- Email -->
                     <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Center">
                         <TextBlock Text="{Binding Email}"

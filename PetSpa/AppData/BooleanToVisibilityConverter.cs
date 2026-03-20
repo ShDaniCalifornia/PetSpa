@@ -11,7 +11,10 @@ namespace PetSpa.AppData
         {
             if (value is bool boolValue)
             {
-                return boolValue ? Visibility.Visible : Visibility.Collapsed;
+                bool invert = parameter != null && (parameter.ToString() == "true" || parameter.ToString() == "invert");
+
+                bool result = invert ? !boolValue : boolValue;
+                return result ? Visibility.Visible : Visibility.Collapsed;
             }
             return Visibility.Visible;
         }

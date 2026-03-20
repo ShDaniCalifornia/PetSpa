@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PetSpa.Views.Pages;
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -17,6 +18,8 @@ namespace PetSpa.Model
         private decimal _servicePrice;
         private string _masterFullName;
         private string _formattedDate;
+
+        public bool IsAdmin => AuthorizationPage.currentUser?.id_role == 1;
 
         public int AppointmentId
         {
@@ -77,13 +80,8 @@ namespace PetSpa.Model
             private set { _formattedDate = value; OnPropertyChanged(); }
         }
 
-        // Полное ФИО клиента и питомец
         public string ClientPetInfo => $"{ClientFullName}, {PetInfo}";
-
-        // Форматированное время
         public string FormattedTime => $"{AppointmentTime:hh\\:mm}";
-
-        // Форматированная цена
         public string FormattedPrice => $"{ServicePrice:N0}";
 
         private void UpdateFormattedDate()

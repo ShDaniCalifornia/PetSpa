@@ -1,10 +1,12 @@
 ﻿using PetSpa.Model;
 using PetSpa.Views.Windows;
 using System;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace PetSpa.Views.Pages
 {
@@ -48,17 +50,29 @@ namespace PetSpa.Views.Pages
                 return false;
             }
 
-            // Проверка уникальности в базе данных
-            if (App.context.Users.Any(u => u.email == EmailTb.Text.Trim()))
+            // Очищаем телефон от всех нецифровых символов
+            string cleanPhone = Regex.Replace(PhoneTb.Text, @"[^\d]", "");
+
+            // Проверяем длину (должно быть 11 цифр)
+            if (cleanPhone.Length != 11)
             {
-                MessageBox.Show("Пользователь с таким email уже существует", "Ошибка",
+                MessageBox.Show("Введите корректный номер телефона (11 цифр, например: 89001234567)",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            // Проверяем уникальность телефона
+            if (App.context.Users.Any(u => u.phone == cleanPhone))
+            {
+                MessageBox.Show("Пользователь с таким номером телефона уже существует", "Ошибка",
                     MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
 
-            if (App.context.Users.Any(u => u.phone == PhoneTb.Text.Trim()))
+            // Проверяем уникальность email
+            if (App.context.Users.Any(u => u.email == EmailTb.Text.Trim()))
             {
-                MessageBox.Show("Пользователь с таким номером телефона уже существует", "Ошибка",
+                MessageBox.Show("Пользователь с таким email уже существует", "Ошибка",
                     MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
@@ -79,11 +93,10 @@ namespace PetSpa.Views.Pages
             }
         }
 
-        private bool IsValidPhone(string phone)
+        private string CleanPhone(string phone)
         {
             // Оставляем только цифры
-            string cleanPhone = Regex.Replace(phone, @"\D", "");
-            return cleanPhone.Length == 11;
+            return Regex.Replace(phone, @"[^\d]", "");
         }
 
         private void RegBtn_Click(object sender, RoutedEventArgs e)
@@ -93,26 +106,29 @@ namespace PetSpa.Views.Pages
 
             try
             {
-                // ОЗДАНИЕ ПОЛЬЗОВАТЕЛЯ В БАЗЕ
+                string generatedLogin = GenerateLogin(EmailTb.Text.Trim());
+                string generatedPassword = GeneratePassword();
+                string cleanPhone = CleanPhone(PhoneTb.Text);
+
                 var newUser = new Users
                 {
                     full_name = FCsTb.Text.Trim(),
                     email = EmailTb.Text.Trim(),
-                    phone = PhoneTb.Text.Trim(),
-                    id_role = 2, // Роль "Клиент" (админ = 1)
-                    login = GenerateLogin(EmailTb.Text.Trim()),
-                    password = GeneratePassword() // Генерируем случайный пароль
+                    phone = cleanPhone, // Сохраняем только цифры (11 символов)
+                    id_role = 2,
+                    login = generatedLogin,
+                    password = generatedPassword,
                 };
 
                 App.context.Users.Add(newUser);
-                App.context.SaveChanges(); // Сохраняем чтобы получить id_user
+                App.context.SaveChanges();
 
-                // СОЗДАНИЕ КЛИЕНТА В БАЗЕ 
                 var newClient = new Clients
                 {
                     full_name = FCsTb.Text.Trim(),
-                    phone = PhoneTb.Text.Trim(),
-                    id_user = newUser.id_user, // Связь с таблицей Users
+                    phone = cleanPhone, // Сохраняем только цифры (11 символов)
+                    date_of_birth = DateTime.Now.AddYears(-25),
+                    id_user = newUser.id_user
                 };
 
                 App.context.Clients.Add(newClient);
@@ -121,13 +137,31 @@ namespace PetSpa.Views.Pages
                 string message = $"Регистрация успешна!\n\n" +
                                $"Ваши данные для входа:\n" +
                                $"Код сотрудника: {newUser.id_user}\n" +
-                               $"Пароль: {newUser.password}\n\n" +
+                               $"Пароль: {generatedPassword}\n\n" +
                                $"Сохраните эти данные!";
 
                 MessageBox.Show(message, "Успешная регистрация",
                     MessageBoxButton.OK, MessageBoxImage.Information);
 
-                NavigationService?.Navigate(new AuthorizationPage());
+                var authWindow = new RegAuthWindow();
+                authWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+                authWindow.Show();
+
+                Window.GetWindow(this)?.Close();
+            }
+            catch (DbEntityValidationException ex)
+            {
+                string errorMessage = "Ошибки валидации:\n";
+                foreach (var validationErrors in ex.EntityValidationErrors)
+                {
+                    foreach (var validationError in validationErrors.ValidationErrors)
+                    {
+                        errorMessage += $"• {validationError.PropertyName}: {validationError.ErrorMessage}\n";
+                    }
+                }
+
+                MessageBox.Show($"Ошибка при регистрации:\n{errorMessage}",
+                    "Ошибка валидации", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (Exception ex)
             {
@@ -139,17 +173,13 @@ namespace PetSpa.Views.Pages
 
         private string GenerateLogin(string email)
         {
-            // Генерируем логин из email (часть до @)
             if (email.Contains("@"))
                 return email.Split('@')[0];
-
-            // Или создаем уникальный логин
             return "user_" + DateTime.Now.ToString("yyyyMMddHHmmss");
         }
 
         private string GeneratePassword()
         {
-            // Генерируем 6-значный пароль
             Random random = new Random();
             return random.Next(100000, 999999).ToString();
         }
@@ -165,74 +195,75 @@ namespace PetSpa.Views.Pages
             instructionWindow.Show();
         }
 
-        // Обработчики placeholder для TextBox
+        // Обработчики плейсхолдеров
         private void FCsTb_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (FCsTb.Text == "ФИО")
+            TextBox textBox = sender as TextBox;
+            if (textBox != null && textBox.Text == "ФИО")
             {
-                FCsTb.Text = "";
-                FCsTb.Foreground = System.Windows.Media.Brushes.White;
+                textBox.Text = "";
+                textBox.Foreground = Brushes.White;
             }
         }
 
         private void FCsTb_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(FCsTb.Text))
+            TextBox textBox = sender as TextBox;
+            if (textBox != null && string.IsNullOrWhiteSpace(textBox.Text))
             {
-                FCsTb.Text = "ФИО";
-                FCsTb.Foreground = System.Windows.Media.Brushes.Gray;
+                textBox.Text = "ФИО";
+                textBox.Foreground = new SolidColorBrush(Color.FromArgb(0x77, 0xFF, 0xFF, 0xFF));
             }
         }
 
         private void EmailTb_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (EmailTb.Text == "Почта")
+            TextBox textBox = sender as TextBox;
+            if (textBox != null && textBox.Text == "Почта")
             {
-                EmailTb.Text = "";
-                EmailTb.Foreground = System.Windows.Media.Brushes.White;
+                textBox.Text = "";
+                textBox.Foreground = Brushes.White;
             }
         }
 
         private void EmailTb_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(EmailTb.Text))
+            TextBox textBox = sender as TextBox;
+            if (textBox != null && string.IsNullOrWhiteSpace(textBox.Text))
             {
-                EmailTb.Text = "Почта";
-                EmailTb.Foreground = System.Windows.Media.Brushes.Gray;
+                textBox.Text = "Почта";
+                textBox.Foreground = new SolidColorBrush(Color.FromArgb(0x77, 0xFF, 0xFF, 0xFF));
             }
         }
 
         private void PhoneTb_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (PhoneTb.Text == "Телефон")
+            TextBox textBox = sender as TextBox;
+            if (textBox != null && textBox.Text == "Телефон")
             {
-                PhoneTb.Text = "";
-                PhoneTb.Foreground = System.Windows.Media.Brushes.White;
+                textBox.Text = "";
+                textBox.Foreground = Brushes.White;
             }
         }
 
         private void PhoneTb_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(PhoneTb.Text))
+            TextBox textBox = sender as TextBox;
+            if (textBox != null && string.IsNullOrWhiteSpace(textBox.Text))
             {
-                PhoneTb.Text = "Телефон";
-                PhoneTb.Foreground = System.Windows.Media.Brushes.Gray;
+                textBox.Text = "Телефон";
+                textBox.Foreground = new SolidColorBrush(Color.FromArgb(0x77, 0xFF, 0xFF, 0xFF));
             }
-        }
-
-        private void FCsTb_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void EmailTb_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void PhoneTb_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
+            else if (textBox != null && !string.IsNullOrWhiteSpace(textBox.Text) && textBox.Text != "Телефон")
+            {
+                // Форматируем телефон для удобного отображения
+                string cleanPhone = CleanPhone(textBox.Text);
+                if (cleanPhone.Length == 11)
+                {
+                    textBox.Text = $"+7 ({cleanPhone.Substring(1, 3)}) {cleanPhone.Substring(4, 3)}-{cleanPhone.Substring(7, 2)}-{cleanPhone.Substring(9, 2)}";
+                    textBox.Foreground = Brushes.White;
+                }
+            }
         }
     }
 }

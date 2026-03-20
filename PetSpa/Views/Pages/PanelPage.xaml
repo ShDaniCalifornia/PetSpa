@@ -10,70 +10,76 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="270"/>
+            <ColumnDefinition Width="240"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="120"/>
             <ColumnDefinition Width="10"/>
-
-            <ColumnDefinition Width="*" MinWidth="118"/>
-            <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="*" MinWidth="125"/>
-            <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="*" MinWidth="118"/>
-            <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="*" MinWidth="125"/>
-            <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="*" MinWidth="138"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
         <!-- Фон на всю ширину -->
         <Image Source="/Resources/Images/panel.png" Stretch="UniformToFill" 
-           Grid.ColumnSpan="13" HorizontalAlignment="Stretch"/>
-
+               Grid.ColumnSpan="13" HorizontalAlignment="Stretch"/>
 
         <Image Source="/Resources/Icons/LogoIcon.png" Stretch="Fill" Margin="0 20 0 20"/>
 
         <!-- Кнопка Профиль -->
         <Button Name ="ProfileBtn" Click="ProfileBtn_Click" Grid.Column="2"
-                    Style="{StaticResource IconButtonStyle}"
-                    VerticalAlignment="Center" HorizontalAlignment="Center">
+                Style="{StaticResource IconButtonStyle}"
+                VerticalAlignment="Center" HorizontalAlignment="Center">
             <Button.Content>
                 <Image Source="/Resources/Icons/ProfileIcon.png"
                         Stretch="Fill" Width="80" Height="80"/>
             </Button.Content>
         </Button>
 
-        <!-- кнопка Клиенты -->
+        <!-- кнопка Клиенты (только для админа) -->
         <Button x:Name="ClientBtn" Click="ClientBtn_Click"
                 Grid.Column="4"
                 Margin="0 0 0 30"
                 FontSize="25" Content="Клиенты"
                 Style="{StaticResource PanelButtonStyle}"/>
 
-        <!-- кнопка Записи -->
+        <!-- кнопка Записи (для админа) -->
         <Button x:Name="RecordsBtn" Click="RecordsBtn_Click"
                 Grid.Column="6"
                 Margin="0 0 0 30"
                 FontSize="25" Content="Записи"
                 Style="{StaticResource PanelButtonStyle}"/>
 
+        <!-- кнопка Мои записи (для клиента) -->
+        <Button x:Name="MyAppointmentsBtn" Click="MyAppointmentsBtn_Click"
+                Grid.Column="4"
+                Margin="0 0 0 30"
+                FontSize="25" Content="Мои записи"
+                Style="{StaticResource PanelButtonStyle}"
+                Visibility="Collapsed"/>
+
         <!-- кнопка Мастера -->
         <Button x:Name="MastersBtn" Click="MastersBtn_Click"
-                Grid.Column="8"
+                Grid.Column="6"
                 Margin="0 0 0 30"
                 FontSize="25" Content="Мастера"
                 Style="{StaticResource PanelButtonStyle}"/>
 
         <!-- кнопка Прайс -->
         <Button x:Name="PriceBtn" Click="PriceBtn_Click"
-                Grid.Column="10"
+                Grid.Column="8"
                 Margin="0 0 0 30"
                 FontSize="25" Content="Прайс"
                 Style="{StaticResource PanelButtonStyle}"/>
 
         <!-- кнопка Помощь -->
         <Button x:Name="HelpBtn" Click="HelpBtn_Click"
-                Grid.Column="12"
+                Grid.Column="10"
                 Margin="0 0 0 30"
                 FontSize="25" Content="Помощь"
                 Style="{StaticResource PanelButtonStyle}"/>

@@ -12,14 +12,14 @@ namespace PetSpa.Views.Pages
         private Model.PetSpaEntities _context = App.context;
         public ObservableCollection<MasterViewModel> MasterViewModels { get; private set; }
 
+        public bool IsAdmin => AuthorizationPage.currentUser?.id_role == 1;
+
         public MastersPage()
         {
             InitializeComponent();
+            DataContext = this;
             MasterViewModels = new ObservableCollection<MasterViewModel>();
-
-            // Если используешь ItemsControl вместо ListBox
             MastersItemsControl.ItemsSource = MasterViewModels;
-
             LoadFromDatabase();
         }
 
@@ -35,11 +35,7 @@ namespace PetSpa.Views.Pages
 
                 foreach (var master in masters)
                 {
-                    // Разбираем experience как в макете
-                    // Формат: "опыт X лет" и навыки каждый с новой строки
                     var experienceText = master.experience ?? "";
-
-                    // Ищем количество лет опыта
                     string experienceYears = "0";
                     foreach (var word in experienceText.Split(' ', '\n', '\r'))
                     {
@@ -50,7 +46,6 @@ namespace PetSpa.Views.Pages
                         }
                     }
 
-                    // Навыки - все строки после заголовков
                     var lines = experienceText.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
                     var skills = lines.Where(line =>
                         !line.Contains("опыт") &&
@@ -67,7 +62,8 @@ namespace PetSpa.Views.Pages
                         Experience = experienceYears,
                         PhotoUrl = master.photo?.Trim() ?? "/Resources/Images/DefaultMaster.png",
                         SpecializationName = master.Specialization?.name_specialization?.Trim() ?? "животными",
-                        Skills = skills
+                        Skills = skills,
+                        IsAdmin = IsAdmin
                     };
 
                     MasterViewModels.Add(viewModel);
@@ -79,18 +75,6 @@ namespace PetSpa.Views.Pages
             }
         }
 
-        // Класс ViewModel прямо в этом файле
-        public class MasterViewModel
-        {
-            public int MasterId { get; set; }
-            public string FullName { get; set; }
-            public string Experience { get; set; }
-            public string PhotoUrl { get; set; }
-            public string SpecializationName { get; set; }
-            public string[] Skills { get; set; }
-        }
-
-        // Остальные методы
         private void SearchTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             if (SearchTextBox.Text == "Поиск")
@@ -114,5 +98,25 @@ namespace PetSpa.Views.Pages
             // Реализуй поиск при необходимости
         }
 
+        private void DeleteMasterBtn_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO: Реализовать удаление мастера
+            MessageBox.Show("Функция удаления мастера в разработке", "Информация",
+                MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+    }
+
+    public class MasterViewModel
+    {
+        public int MasterId { get; set; }
+        public string FullName { get; set; }
+        public string Experience { get; set; }
+        public string PhotoUrl { get; set; }
+        public string SpecializationName { get; set; }
+        public string[] Skills { get; set; }
+        public bool IsAdmin { get; set; }
+
+        public string SearchText =>
+            $"{FullName} {Experience} {SpecializationName} {string.Join(" ", Skills)}";
     }
 }
